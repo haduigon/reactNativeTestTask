@@ -2,11 +2,6 @@ import React, {useRef, useState} from 'react';
 import {
   View,
   TextInput,
-  // TouchableOpacity,
-  // Text,
-  // Keyboard,
-  // TouchableWithoutFeedback,
-  // ScrollView,
 } from 'react-native';
 import styles from './InputStyles';
 
@@ -15,10 +10,12 @@ type Props = {
   onChangeText?: () => {};
 };
 
-function Input({ text = 'Type your email' }: Props) {
-  const [value, setValue] = useState<string>(text);
+function Input({text = 'Type your email'}: Props) {
+  const [value, setValue] = useState<string>('');
   // const [showKeyboard, setShowKeyboard] = useState<boolean>(true);
   const inputRef = useRef<TextInput>(null);
+
+  const isPassword = text.includes('password') ? true : false;
 
   const handleBlur = () => {
     if (inputRef.current) {
@@ -27,10 +24,6 @@ function Input({ text = 'Type your email' }: Props) {
     }
   };
 
-  // const hideKeyboard = () => {
-  //   Keyboard.dismiss();
-  //   handleBlur();
-  // };
 
   function handleChangeText(inputText: string) {
     console.log(inputText, 'inputText');
@@ -40,19 +33,18 @@ function Input({ text = 'Type your email' }: Props) {
   }
 
   return (
-      // <ScrollView style={styles.container}>
-      <View style={styles.container}>
-        <TextInput
-          ref={inputRef}
-          style={styles.input}
-          placeholder={text}
-          value={value}
-          onChangeText={handleChangeText}
-          onBlur={handleBlur}
-          // showSoftInputOnFocus={showKeyboard}
-        />
-      </View>
-    // </ScrollView>
+    <View style={styles.container}>
+      <TextInput
+        ref={inputRef}
+        style={styles.input}
+        placeholder={text}
+        value={value}
+        onChangeText={handleChangeText}
+        onBlur={handleBlur}
+        secureTextEntry={isPassword}
+        // showSoftInputOnFocus={showKeyboard}
+      />
+    </View>
   );
 }
 
