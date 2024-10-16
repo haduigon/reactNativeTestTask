@@ -10,6 +10,10 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
+import android.content.Context
+import com.facebook.react.ReactInstanceManager
+import com.facebook.flipper.android.utils.FlipperUtils
+import java.lang.reflect.InvocationTargetException
 
 class MainApplication : Application(), ReactApplication {
 
@@ -35,9 +39,32 @@ class MainApplication : Application(), ReactApplication {
   override fun onCreate() {
     super.onCreate()
     SoLoader.init(this, false)
+    initializeFlipper(this, reactNativeHost.reactInstanceManager)
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
       load()
     }
+    
   }
+
+  private fun initializeFlipper(context: Context, reactInstanceManager: ReactInstanceManager) {
+        if (FlipperUtils.shouldEnableFlipper(context)) {
+            try {
+                val flipperClass = Class.forName("com.reactnativetesttask.ReactNativeFlipper")
+                flipperClass.getMethod(
+                    "initializeFlipper",
+                    Context::class.java,
+                    ReactInstanceManager::class.java
+                ).invoke(null, context, reactInstanceManager)
+            } catch (e: ClassNotFoundException) {
+                e.printStackTrace()
+            } catch (e: NoSuchMethodException) {
+                e.printStackTrace()
+            } catch (e: IllegalAccessException) {
+                e.printStackTrace()
+            } catch (e: InvocationTargetException) {
+                e.printStackTrace()
+            }
+        }
+    }
 }
