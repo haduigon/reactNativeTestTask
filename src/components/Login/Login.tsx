@@ -1,5 +1,5 @@
 /* eslint-disable */
-<script src="http://localhost:8097"></script>;
+{/* <script src="http://localhost:8097"></script>; */}
 {
   /* <script src="http://192.168.1.29:8097"></script> */
 }
@@ -11,7 +11,7 @@ import React, {
 import {
   // Button,
   SafeAreaView,
-  ScrollView,
+  // ScrollView,
   // ScrollView,
   // StatusBar,
   // StyleSheet,
@@ -30,6 +30,7 @@ import {HomeScreenNavigationProp} from '../../screens/HomeScreen';
 // import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import styles from './LoginStyles';
 import Input from '../Input/Input';
+import CustomButton from '../CustomButton/CustomButton';
 
 GoogleSignin.configure({
   webClientId:
@@ -47,23 +48,20 @@ export const Login = () => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const [showPass, setShowPass] = useState(true);
+
   const signInWithGoogle = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      // console.log(userInfo, 'it is a user info');
-
-      // const { idToken } = userInfo;
       const {idToken} = await GoogleSignin.getTokens();
       const googleCridentials = auth.GoogleAuthProvider.credential(idToken);
       await auth().signInWithCredential(googleCridentials);
       navigation.navigate('About');
-      // console.log('User in response', user);
     } catch (error) {
       console.error('Error during Google Sign-In:', error);
     }
 
-    // auth().setPersistence(auth.Auth.Persistence.LOCAL);
   };
 
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
@@ -89,27 +87,24 @@ export const Login = () => {
   }
 
   return (
-    // <ScrollView >
     <SafeAreaView style={backgroundStyle}>
       <Section title="Please login2">
-        {/* <View > */}
+
         <Input />
 
-        {/* </View> */}
         <View
           style={{
             width: 180,
             display: 'flex',
             flexDirection: 'row',
-            // alignItems: 'center',
           }}>
-          <View><Input text="Type your password" /></View>
+          <View><Input text="Type your password" isPassword={showPass} /></View>
           <TouchableOpacity
+            onPress={() => setShowPass(prevState => !prevState)}
             style={{
               backgroundColor: '#7b96bc',
               padding: '2%',
               borderRadius: 5,
-              // marginBottom: 10,
               width: 75,
               height: 40,
               marginLeft: 5,
@@ -125,22 +120,7 @@ export const Login = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={{
-            backgroundColor: '#7b96bc',
-            padding: '2%',
-            borderRadius: 5,
-            marginTop: 20,
-            width: 180,
-          }}>
-          <Text
-            style={{
-              color: 'white',
-              textAlign: 'center',
-            }}>
-            Login with crids
-          </Text>
-        </TouchableOpacity>
+        <CustomButton name='Login with crids' />
         <Text
           style={{
             marginTop: 20,
@@ -149,23 +129,7 @@ export const Login = () => {
         </Text>
         <View>
           <Text>Google Sign-In with Firebase</Text>
-          <TouchableOpacity
-            onPress={signInWithGoogle}
-            style={{
-              backgroundColor: '#7b96bc',
-              padding: '2%',
-              borderRadius: 5,
-              marginTop: 20,
-              width: 180,
-            }}>
-            <Text
-              style={{
-                color: 'white',
-                textAlign: 'center',
-              }}>
-              Sign In with Google
-            </Text>
-          </TouchableOpacity>
+          <CustomButton name='Sign In with Google' onPress={signInWithGoogle} />
         </View>
         <Text
           style={{
@@ -173,24 +137,9 @@ export const Login = () => {
           }}>
           Login with Facebok
         </Text>
-        <TouchableOpacity
-          style={{
-            backgroundColor: '#7b96bc',
-            padding: '2%',
-            borderRadius: 5,
-            marginTop: 20,
-            width: 180,
-          }}>
-          <Text
-            style={{
-              color: 'white',
-              textAlign: 'center',
-            }}>
-            Login with Facebook
-          </Text>
-        </TouchableOpacity>
+        <CustomButton name='Login with Facebook' />
+        <CustomButton name='Create your acc' />
       </Section>
     </SafeAreaView>
-    // </ScrollView>
   );
 };
