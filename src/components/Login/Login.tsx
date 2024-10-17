@@ -31,6 +31,7 @@ import {HomeScreenNavigationProp} from '../../screens/HomeScreen';
 import styles from './LoginStyles';
 import Input from '../Input/Input';
 import CustomButton from '../CustomButton/CustomButton';
+import { useSignInWithGoogle } from '../../auth/firebase';
 
 GoogleSignin.configure({
   webClientId:
@@ -49,20 +50,8 @@ export const Login = () => {
   };
 
   const [showPass, setShowPass] = useState(true);
-
-  const signInWithGoogle = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      const {idToken} = await GoogleSignin.getTokens();
-      const googleCridentials = auth.GoogleAuthProvider.credential(idToken);
-      await auth().signInWithCredential(googleCridentials);
-      navigation.navigate('About');
-    } catch (error) {
-      console.error('Error during Google Sign-In:', error);
-    }
-
-  };
+  // Use custom hook to sign in
+  const signInWithGoogle = useSignInWithGoogle();
 
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -97,8 +86,9 @@ export const Login = () => {
             width: 180,
             display: 'flex',
             flexDirection: 'row',
+            marginTop: 30,
           }}>
-          <View><Input text="Type your password" isPassword={showPass} /></View>
+          <Input text="Type your password" isPassword={showPass} />
           <TouchableOpacity
             onPress={() => setShowPass(prevState => !prevState)}
             style={{
@@ -110,7 +100,9 @@ export const Login = () => {
               marginLeft: 5,
               display: 'flex',
               justifyContent: 'center'
-            }}>
+            }}
+            activeOpacity={0.7}
+          >
             <Text
               style={{
                 color: 'white',
@@ -118,17 +110,16 @@ export const Login = () => {
               }}>
               See pass
             </Text>
-          </TouchableOpacity>
-        </View>
+            </TouchableOpacity>
+            </View>
         <CustomButton name='Login with crids' />
         <Text
           style={{
             marginTop: 20,
           }}>
-          Hello, this is a test login page
+          Login with Google
         </Text>
         <View>
-          <Text>Google Sign-In with Firebase</Text>
           <CustomButton name='Sign In with Google' onPress={signInWithGoogle} />
         </View>
         <Text
@@ -138,6 +129,12 @@ export const Login = () => {
           Login with Facebok
         </Text>
         <CustomButton name='Login with Facebook' />
+        <Text
+          style={{
+            marginTop: 20,
+          }}>
+          Don't have acc? Create it
+        </Text>
         <CustomButton name='Create your acc' />
       </Section>
     </SafeAreaView>

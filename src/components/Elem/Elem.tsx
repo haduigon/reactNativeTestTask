@@ -1,5 +1,4 @@
-/* eslint-disable */
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,17 +7,12 @@ import {
   FlatList,
   Image,
 } from 'react-native';
-import auth from '@react-native-firebase/auth'; // getAuth
+import auth from '@react-native-firebase/auth';
 import Loader from '../Loader/Loader';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-// import { initializeApp } from 'firebase/app';
-// import { getReactNativePersistence, initializeAuth } from 'firebase/auth';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {Section} from '../Section/Section';
 import {HomeScreenNavigationProp} from '../../screens/HomeScreen';
-// import { GoogleSignin } from '@react-native-google-signin/google-signin';
-// import { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 GoogleSignin.configure({
   webClientId:
@@ -32,13 +26,12 @@ const API_KEY = '74240d0d45984f26a208276b1614598a';
 export interface Article {
   title: string;
   description: string;
-  url: string; // Assuming 'url' is the unique identifier for each article
+  url: string;
   urlToImage: string;
   content: string;
 }
 
 export const Elem = () => {
-  // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
   const navigation = useNavigation<HomeScreenNavigationProp>();
@@ -64,13 +57,11 @@ export const Elem = () => {
   }
 
   useEffect(() => {
-    const usr = auth().currentUser;
-
-    console.log(usr);
+    auth().currentUser;
 
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return () => subscriber(); // unsubscribe on unmount
-  }, []);
+    return () => subscriber();
+  });
 
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
@@ -78,10 +69,10 @@ export const Elem = () => {
   const fetchNews = async () => {
     try {
       const response = await fetch(
-        `https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}`,
+        `https://newsapi.org/v2/everything?q=tesla&from=2024-09-17&sortBy=publishedAt&apiKey=${API_KEY}`,
       );
       const json = await response.json();
-      console.log(Object.keys(json.articles['0']), 'json');
+      console.log(Object.keys(json.articles['2']), 'json');
       setArticles(json.articles);
     } catch (error) {
       console.error(error);
@@ -95,25 +86,28 @@ export const Elem = () => {
   }, []);
 
   useEffect(() => {
-    console.log(articles.length, 'articles');
+    console.log(articles[5], 'articles');
   }, [articles]);
 
   const artcl = ({item}: {item: Article}) => {
     return (
       <View style={styles.articleContainer}>
         {item.urlToImage ? (
-          <Image source={{uri: item.urlToImage}} style={styles.image} />
+          <Image source={{uri: item?.urlToImage}} style={styles.image} />
         ) : null}
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.description}>{item.description}</Text>
         <TouchableOpacity
-          onPress={() => navigation.navigate('NewsItem', { newsItem: item } as any)}
+          onPress={() =>
+            navigation.navigate('NewsItem', {newsItem: item} as any)
+          }
           key={item.url}
           style={{
             backgroundColor: '#7b96bc',
             padding: '2%',
             borderRadius: 5,
-          }}>
+          }}
+          activeOpacity={0.7}>
           <Text
             style={{
               color: 'white',
@@ -126,7 +120,7 @@ export const Elem = () => {
     );
   };
 
-  if (initializing) return <Loader />;
+  if (initializing) {return <Loader />;}
 
   if (loading) {
     return <Loader />;
@@ -145,14 +139,17 @@ export const Elem = () => {
       <Section title="">
         <Text>Welcome !</Text>
         <View style={styles.signOutContainer}>
-          <TouchableOpacity onPress={signOut} style={styles.signOutButton}>
+          <TouchableOpacity
+            onPress={signOut}
+            style={styles.signOutButton}
+            activeOpacity={0.7}>
             <Text style={styles.signOutText}>Sign out</Text>
           </TouchableOpacity>
         </View>
         <FlatList
           data={articles}
           renderItem={artcl}
-          keyExtractor={item => item.url}
+          keyExtractor={item => item.url + Math.floor(Math.random() * 1001)}
           style={styles.flatListContent}
         />
       </Section>
@@ -162,7 +159,7 @@ export const Elem = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Ensure the container takes up the full screen height
+    flex: 1,
     padding: 10,
   },
   signOutContainer: {
@@ -193,7 +190,7 @@ const styles = StyleSheet.create({
   },
   flatListContent: {
     paddingBottom: 20,
-    marginBottom: 40, // Adds padding to the bottom of the FlatList to avoid content being cut off
+    marginBottom: 40,
   },
   image: {
     width: '100%',

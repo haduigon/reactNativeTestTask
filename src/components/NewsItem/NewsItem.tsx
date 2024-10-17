@@ -7,7 +7,7 @@ import { Article } from '../Elem/Elem';
 function NewsItem({ route }: any) {
   const { newsItem }: { newsItem: Article } = route.params;
 
-  console.log(newsItem.url, 'newsItem')
+  // console.log(newsItem.url, 'newsItem')
   return (
     <View style={styles.articleContainer}>
       <Text>The news:</Text>
@@ -24,7 +24,7 @@ export default NewsItem;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Ensure the container takes up the full screen height
+    flex: 1,
     padding: 10,
   },
   signOutContainer: {
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
   flatListContent: {
     paddingBottom: 20,
-    marginBottom: 40, // Adds padding to the bottom of the FlatList to avoid content being cut off
+    marginBottom: 40,
   },
   image: {
     width: '100%',
