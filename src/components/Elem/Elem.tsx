@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
   FlatList,
   Image,
 } from 'react-native';
@@ -13,6 +12,7 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {useNavigation} from '@react-navigation/native';
 import {Section} from '../Section/Section';
 import {HomeScreenNavigationProp} from '../../screens/HomeScreen';
+import styles from './ElemStyles';
 
 GoogleSignin.configure({
   webClientId:
@@ -37,8 +37,6 @@ export const Elem = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
   function onAuthStateChanged(user2: any) {
-    const data = auth().currentUser;
-    console.log(user2, data, 'authlistener');
     setUser(user2);
     if (initializing) {
       setInitializing(false);
@@ -47,7 +45,6 @@ export const Elem = () => {
 
   async function signOut() {
     try {
-      console.log('sgned out');
       await auth().signOut();
       await GoogleSignin.signOut();
       navigation.navigate('Home');
@@ -69,10 +66,9 @@ export const Elem = () => {
   const fetchNews = async () => {
     try {
       const response = await fetch(
-        `https://newsapi.org/v2/everything?q=tesla&from=2024-09-17&sortBy=publishedAt&apiKey=${API_KEY}`,
+        `https://newsapi.org/v2/everything?q=apple&from=2024-10-16&to=2024-10-16&sortBy=popularity&apiKey=${API_KEY}`,
       );
       const json = await response.json();
-      console.log(Object.keys(json.articles['2']), 'json');
       setArticles(json.articles);
     } catch (error) {
       console.error(error);
@@ -84,10 +80,6 @@ export const Elem = () => {
   useEffect(() => {
     fetchNews();
   }, []);
-
-  useEffect(() => {
-    console.log(articles[5], 'articles');
-  }, [articles]);
 
   const artcl = ({item}: {item: Article}) => {
     return (
@@ -102,17 +94,11 @@ export const Elem = () => {
             navigation.navigate('NewsItem', {newsItem: item} as any)
           }
           key={item.url}
-          style={{
-            backgroundColor: '#7b96bc',
-            padding: '2%',
-            borderRadius: 5,
-          }}
-          activeOpacity={0.7}>
+          style={styles.button}
+          activeOpacity={0.7}
+        >
           <Text
-            style={{
-              color: 'white',
-              textAlign: 'center',
-            }}>
+            style={styles.text}>
             Read the news
           </Text>
         </TouchableOpacity>
@@ -156,45 +142,3 @@ export const Elem = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-  },
-  signOutContainer: {
-    marginBottom: 10,
-  },
-  signOutButton: {
-    backgroundColor: '#7b96bc',
-    padding: 10,
-    borderRadius: 5,
-    marginVertical: 10,
-  },
-  signOutText: {
-    color: 'white',
-    textAlign: 'center',
-  },
-  articleContainer: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  description: {
-    fontSize: 14,
-  },
-  flatListContent: {
-    paddingBottom: 20,
-    marginBottom: 40,
-  },
-  image: {
-    width: '100%',
-    height: 200,
-    marginBottom: 10,
-  },
-});

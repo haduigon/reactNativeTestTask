@@ -1,21 +1,42 @@
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
-import {useNavigation} from '@react-navigation/native';
-import {HomeScreenNavigationProp} from '../screens/HomeScreen';
 
-export const useSignInWithGoogle = () => {
-  const navigation = useNavigation<HomeScreenNavigationProp>();
+export const signInWithGoogle = async () => {
+  try {
+    await GoogleSignin.hasPlayServices();
+    const user = await GoogleSignin.signIn();
+    const {idToken} = await GoogleSignin.getTokens();
+    const googleCridentials = auth.GoogleAuthProvider.credential(idToken);
+    await auth().signInWithCredential(googleCridentials);
+    return user;
+  } catch (error) {
+    console.error('Error during Google Sign-In:', error);
+    return error;
+  }
+};
 
-  return async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      await GoogleSignin.signIn();
-      const { idToken } = await GoogleSignin.getTokens();
-      const googleCridentials = auth.GoogleAuthProvider.credential(idToken);
-      await auth().signInWithCredential(googleCridentials);
-      navigation.navigate('About');
-    } catch (error) {
-      console.error('Error during Google Sign-In:', error);
-    }
-  };
+export const createAccWithCrids = async (email: string, password: string) => {
+  try {
+    const newUser = await auth().createUserWithEmailAndPassword(
+      email,
+      password,
+    );
+    return newUser;
+  } catch (error: any) {
+    console.log(error.code);
+    return error;
+  }
+};
+
+export const loginWithCrids = async (email: string, password: string) => {
+  try {
+    const user = await auth().signInWithEmailAndPassword(
+      email,
+      password,
+    );
+    return user;
+  } catch (error: any) {
+    console.log(error.code);
+    return error;
+  }
 };

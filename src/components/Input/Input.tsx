@@ -12,30 +12,20 @@ import { Text } from 'react-native';
 
 type Props = {
   text?: string;
-  onChangeText?: () => {};
+  onChangeText?: (field: any, value: string) => void;
   isPassword?: boolean
 };
 
-function Input({text = 'Type your email', isPassword = false}: Props) {
+function Input({text = 'Type your email', isPassword = false, onChangeText}: Props) {
   const [value, setValue] = useState<string>('');
   const [error, setError] = useState(false);
-  // const [showKeyboard, setShowKeyboard] = useState<boolean>(true);
-  // const inputRef = useRef<TextInput>(null);
-
-
-  // const isPassword = text.includes('password') ? true : false;
-
-  // const handleBlur = () => {
-  //   if (inputRef.current) {
-  //     // setShowKeyboard(false);
-  //     inputRef.current.blur();
-  //   }
-  // };
-
+  const field = text.includes('email') ? 'email' : 'password';
 
   function handleChangeText(inputText: string) {
     setValue(inputText);
-
+    if (onChangeText) {
+      onChangeText(field, inputText);
+    }
     if (text.includes('email')) {
       if (!checkIfEmail(value)) {
         setError(true);

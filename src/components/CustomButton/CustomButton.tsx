@@ -5,7 +5,7 @@ import styles from './CustomButtonStyles';
 
 type Props = {
   name: string,
-  onPress?: () => {}
+  onPress?: () => void,
 }
 
 const CustomButton: React.FC<Props> = ({ name = 'def button', onPress }) => {
