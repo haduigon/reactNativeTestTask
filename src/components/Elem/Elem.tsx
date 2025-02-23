@@ -13,6 +13,8 @@ import {useNavigation} from '@react-navigation/native';
 import {Section} from '../Section/Section';
 import {HomeScreenNavigationProp} from '../../screens/HomeScreen';
 import styles from './ElemStyles';
+import { LoginManager } from 'react-native-fbsdk-next';
+import { Article } from '../../types';
 
 GoogleSignin.configure({
   webClientId:
@@ -23,13 +25,13 @@ GoogleSignin.configure({
 
 const API_KEY = '74240d0d45984f26a208276b1614598a';
 
-export interface Article {
-  title: string;
-  description: string;
-  url: string;
-  urlToImage: string;
-  content: string;
-}
+// export interface Article {
+//   title: string;
+//   description: string;
+//   url: string;
+//   urlToImage: string;
+//   content: string;
+// }
 
 export const Elem = () => {
   const [initializing, setInitializing] = useState(true);
@@ -47,6 +49,7 @@ export const Elem = () => {
     try {
       await auth().signOut();
       await GoogleSignin.signOut();
+      await LoginManager.logOut();
       navigation.navigate('Home');
     } catch (error) {
       console.error(error);

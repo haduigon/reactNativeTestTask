@@ -21,10 +21,11 @@ import Loader from '../Loader/Loader';
 import {useNavigation} from '@react-navigation/native';
 import {HomeScreenNavigationProp} from '../../screens/HomeScreen';
 // import styles from './LoginStyles';
-import Input from '../Input/Input';
+// import Input from '../Input/Input';
 import CustomButton from '../CustomButton/CustomButton';
 import {
   signInWithGoogle,
+  signInWithFacebook,
 } from '../../auth/firebase';
 import LoginForm from '../LoginForm/LoginForm';
 
@@ -93,7 +94,7 @@ export const Login = () => {
           }}>
           Login with Facebok
         </Text>
-        <CustomButton name="Login with Facebook" />
+        <CustomButton name="Login with Facebook" onPress={signInWithFacebook}/>
       </Section>
     </SafeAreaView>
   );

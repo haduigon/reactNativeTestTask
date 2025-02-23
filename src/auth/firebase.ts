@@ -1,5 +1,6 @@
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 
 export const signInWithGoogle = async () => {
   try {
@@ -40,3 +41,22 @@ export const loginWithCrids = async (email: string, password: string) => {
     return error;
   }
 };
+
+export const signInWithFacebook = async () => {
+  const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+
+  if (result.isCancelled) {
+    throw 'User canceled auth';
+  }
+
+  const data = await AccessToken.getCurrentAccessToken();
+
+  if (!data) {
+    throw 'Smth went wrong';
+  }
+
+  const facebookCrids = auth.FacebookAuthProvider.credential(data.accessToken);
+  console.log(facebookCrids, 'facebookCrids');
+  
+  return auth().signInWithCredential(facebookCrids);
+}
